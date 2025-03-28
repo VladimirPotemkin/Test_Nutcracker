@@ -36,7 +36,7 @@ export const useMoviesStore = defineStore('movies', {
       try {
         this.loading = true
         this.error = null
-
+        
         const response = await axios.get(`/movie/${id}`)
         const movieData = response.data?.data || response.data
 

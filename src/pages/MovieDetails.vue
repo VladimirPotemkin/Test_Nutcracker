@@ -19,7 +19,7 @@
   </template>
   
   <script setup>
-  import { computed, onMounted } from 'vue'
+  import { computed, onMounted, watch } from 'vue'
   import { useRoute } from 'vue-router'
   import { useMoviesStore } from '../store/index'
   import MovieCard from '../components/MovieCard.vue'
@@ -27,15 +27,30 @@
   const route = useRoute()
   const store = useMoviesStore()
   
-  const movie = computed(() => 
-    store.selectedMovie || store.movies.find(m => m.id === route.params.id)
-  )
+  const movie = computed(() => {
+  const currentId = route.params.id;
+  
+  if (store.selectedMovie?.id?.toString() === currentId) {
+    return store.selectedMovie;
+  }
+  
+  const foundMovie = store.movies.find(m => m.id.toString() === currentId);
+  
+  if (!foundMovie) store.selectedMovie = null;
+  
+  return foundMovie;
+});
+
+
   
   onMounted(async () => {
     if (!movie.value) {
       await store.fetchMovieById(route.params.id)
     }
   })
+
+
+
   </script>
 
   <style lang="scss" scoped>
